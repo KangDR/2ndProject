@@ -1,0 +1,169 @@
+주제 위키사이트
+회원가입(id,pw찾기 및 로그인/로그아웃)
+주제 카테고리 등록 수정 삭제
+글작성,수정(임시저장-세션으로 구현)
+최근 수정자료
+문서 역사보기
+회원 수정내역 보기(관리자)
+나의 수정내역
+랜덤 문서이동(검색창 옆의 랜덤아이콘사용)
+검색창(검색어 추천기능)
+게시판(기존 테이블 사용)
+
+drop table members cascade constraints;
+
+drop sequence memseq;
+create sequence memseq  
+increment by 1
+start with 1
+minvalue 0
+maxvalue 10000
+nocache;
+
+create table members(
+	no number primary key,
+	id varchar2(12) not null,
+	password varchar2(12) not null,
+	name varchar2(30) not null,
+	email varchar2(30),
+	phone1 varchar2(10),
+	phone2 varchar2(10),
+	phone3 varchar2(20)	
+);
+insert into members values(memseq.nextval,'admin','1234','관리자','admin@a.com','010','1234','5678');
+
+drop sequence catseq ;
+drop table category cascade constraints;
+
+create sequence catseq
+increment by 1
+start with 1
+minvalue 1
+maxvalue 10000
+nocache;
+
+
+create table category(
+	cnum 	number primary key,
+	code 	varchar2(20) not null,
+	cname 	varchar2(50) not null
+);
+
+insert into category values(catseq.nextval,'politics','정치');
+insert into category values(catseq.nextval,'economy','경제');
+insert into category values(catseq.nextval,'society','사회');
+insert into category values(catseq.nextval,'culture','문화');
+insert into category values(catseq.nextval,'math','수학');
+insert into category values(catseq.nextval,'hobby','취미');
+insert into category values(catseq.nextval,'technology','기술');
+insert into category values(catseq.nextval,'entertainment','연예');
+insert into category values(catseq.nextval,'art','예술');
+insert into category values(catseq.nextval,'life','생활');
+
+--번호,분류,제목,작성자,작성시간,내용,버전
+drop table article cascade constraints;
+create table article(
+	no 	number primary key,
+	code 	varchar2(20) not null,
+	title 	varchar2(50) not null,
+	writer varchar2(50) not null,
+	reg_date date default sysdate not null,
+	contents varchar2(400) not null,
+	version number not null,
+	img varchar2(50)
+);
+drop sequence artseq ;
+create sequence artseq
+increment by 1
+start with 1
+minvalue 1
+maxvalue 10000
+nocache;
+
+insert into article(no,code,title,writer,contents,version,img) values(artseq.nextval,'politics','test1','admin','test1',0,null);
+insert into article(no,code,title,writer,contents,version,img) values(artseq.nextval,'economy','test2','admin','test2',0,null);
+insert into article(no,code,title,writer,contents,version,img) values(artseq.nextval,'society','test3','admin','test3',0,null);
+insert into article(no,code,title,writer,contents,version,img) values(artseq.nextval,'culture','test4','admin','test4',0,null);
+insert into article(no,code,title,writer,contents,version,img) values(artseq.nextval,'math','test5','admin','test5',0,null);
+insert into article(no,code,title,writer,contents,version,img) values(artseq.nextval,'hobby','test6','kang','test6',0,null);
+insert into article(no,code,title,writer,contents,version,img) values(artseq.nextval,'technology','test7','kang','test7',0,null);
+insert into article(no,code,title,writer,contents,version,img) values(artseq.nextval,'entertainment','test8','kang','test8',0,null);
+insert into article(no,code,title,writer,contents,version,img) values(artseq.nextval,'art','test9','kang','test9',0,null);
+insert into article(no,code,title,writer,contents,version,img) values(artseq.nextval,'life','test10','kang','test10',0,null);
+
+drop table board cascade constraints;
+
+create table board( 
+	num number not null primary key,
+	writer varchar2(10) not null,
+	email varchar2(20),
+	subject varchar2(20) not null,
+	passwd varchar2(12) not null,
+	reg_date date not null,
+	readcount int default 0,
+	ref number not null,
+	re_step number not null,
+	re_level number not null,
+	content varchar2(100) not null,
+	ip varchar2(20) not null
+);
+
+drop sequence board_seq;
+create sequence board_seq
+  increment by 1
+  start with 1
+  minvalue 1
+  maxvalue 10000
+  nocache;
+  
+
+--아래 sql문은 답글까지 insert 한 것
+	
+insert into board(num,writer,email,subject,passwd,reg_date,ref,re_step,re_level,content,ip)
+values(board_seq.nextval,'a1','a1','a1','1234','2015-1-1',1,0,0,'내용1','127.0.0.1');
+
+
+
+insert into board(num,writer,email,subject,passwd,reg_date,ref,re_step,re_level,content,ip)
+values(board_seq.nextval,'a2','a2','a2','1234','2015-1-1',2,0,0,'내용2','127.0.0.1');
+
+insert into board(num,writer,email,subject,passwd,reg_date,ref,re_step,re_level,content,ip)
+values(board_seq.nextval,'a21','a21','a21','1234','2015-1-1',2,4,1,'내용21','127.0.0.1');
+
+insert into board(num,writer,email,subject,passwd,reg_date,ref,re_step,re_level,content,ip)
+values(board_seq.nextval,'a22','a22','a22','1234','2015-1-1',2,1,1,'내용22','127.0.0.1');
+
+insert into board(num,writer,email,subject,passwd,reg_date,ref,re_step,re_level,content,ip)
+values(board_seq.nextval,'a221','a221','a221','1234','2015-1-1',2,3,2,'내용221','127.0.0.1');
+
+insert into board(num,writer,email,subject,passwd,reg_date,ref,re_step,re_level,content,ip)
+values(board_seq.nextval,'a222','a222','a222','1234','2015-1-1',2,2,2,'내용222','127.0.0.1');
+
+
+
+insert into board(num,writer,email,subject,passwd,reg_date,ref,re_step,re_level,content,ip)
+values(board_seq.nextval,'a3','a3','a3','1234','2015-1-1',7,0,0,'내용3','127.0.0.1');
+
+insert into board(num,writer,email,subject,passwd,reg_date,ref,re_step,re_level,content,ip)
+values(board_seq.nextval,'a31','a31','a31','1234','2015-1-1',7,6,1,'내용31','127.0.0.1');
+
+insert into board(num,writer,email,subject,passwd,reg_date,ref,re_step,re_level,content,ip)
+values(board_seq.nextval,'a311','a311','a311','1234','2015-1-1',7,7,2,'내용311','127.0.0.1');
+
+insert into board(num,writer,email,subject,passwd,reg_date,ref,re_step,re_level,content,ip)
+values(board_seq.nextval,'a32','a32','a32','1234','2015-1-1',7,2,1,'내용32','127.0.0.1');
+
+insert into board(num,writer,email,subject,passwd,reg_date,ref,re_step,re_level,content,ip)
+values(board_seq.nextval,'a321','a321','a321','1234','2015-1-1',7,5,2,'내용321','127.0.0.1');
+
+insert into board(num,writer,email,subject,passwd,reg_date,ref,re_step,re_level,content,ip)
+values(board_seq.nextval,'a322','a322','a322','1234','2015-1-1',7,3,2,'내용322','127.0.0.1');
+
+insert into board(num,writer,email,subject,passwd,reg_date,ref,re_step,re_level,content,ip)
+values(board_seq.nextval,'a3221','a3221','a3221','1234','2015-1-1',7,4,3,'내용3221','127.0.0.1');
+
+insert into board(num,writer,email,subject,passwd,reg_date,ref,re_step,re_level,content,ip)
+values(board_seq.nextval,'a33','a33','a33','1234','2015-1-1',7,1,1,'내용33','127.0.0.1');
+
+
+commit;
